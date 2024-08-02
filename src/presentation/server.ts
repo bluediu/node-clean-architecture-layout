@@ -18,6 +18,10 @@ export class Server {
   }
 
   async start() {
+    // Middlewares
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
+
     // Use defined routes.
     this.app.use(this.routes);
 
