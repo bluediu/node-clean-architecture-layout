@@ -27,3 +27,6 @@ dist-ssr
 
 # Envs
 .env
+
+# DB
+mongo/*
