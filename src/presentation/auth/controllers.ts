@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
+
 import {
   AuthRepository,
   CustomError,
+  LoginUserDto,
   RegisterUser,
   RegisterUserDto,
 } from '../../domain';
-import { JwtAdapter } from '../../config';
-import { UserModel } from '../../data/mongodb';
+import { LoginUser, UsersUC } from '../../domain/use-cases/auth';
 
 export class AuthController {
   constructor(private readonly authRepository: AuthRepository) {}
@@ -31,17 +32,20 @@ export class AuthController {
   };
 
   loginUser = (req: Request, res: Response) => {
-    res.json({ ok: true });
+    const [error, loginUserDto] = LoginUserDto.login(req.body);
+
+    if (error) return res.status(400).json({ error });
+
+    new LoginUser(this.authRepository)
+      .execute(loginUserDto!)
+      .then((data) => res.json(data))
+      .catch((error) => this.handleError(error, res));
   };
 
   getUsers = (req: Request, res: Response) => {
-    UserModel.find()
-      .then((users) =>
-        res.json({
-          users,
-          // user: req.body.user,
-        })
-      )
-      .catch(() => res.status(500).json({ error: 'Internal Server Error' }));
+    new UsersUC(this.authRepository)
+      .list()
+      .then((data) => res.json(data))
+      .catch((error) => this.handleError(error, res));
   };
 }

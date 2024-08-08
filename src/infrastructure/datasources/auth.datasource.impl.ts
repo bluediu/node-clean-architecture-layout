@@ -21,6 +21,19 @@ export class AuthDatasourceImpl implements AuthDatasource {
     private readonly comparePw: TCompareFn = BcryptAdapter.compare
   ) {}
 
+  async getUsers(): Promise<UserEntity[]> {
+    try {
+      const users: UserEntity[] = await UserModel.find();
+      return users;
+    } catch (error) {
+      if (error instanceof CustomError) {
+        throw error;
+      }
+
+      throw CustomError.internalServer();
+    }
+  }
+
   async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
     const { email, password } = loginUserDto;
 
