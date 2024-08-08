@@ -4,23 +4,23 @@ import { CustomError } from '../../errors';
 import { TSignToken } from '../../../types';
 import { IUserToken } from '../../../interfaces';
 
-import { RegisterUserDto } from '../../dtos/auth';
+import { LoginUserDto } from '../../dtos/auth';
 
 import { AuthRepository } from '../../repositories';
 
-interface IRegisterUseUseCase {
-  execute(registerUserDto: RegisterUserDto): Promise<IUserToken>;
+interface ILoginUseUseCase {
+  execute(loginUserDto: LoginUserDto): Promise<IUserToken>;
 }
 
-export class RegisterUser implements IRegisterUseUseCase {
+export class LoginUser implements ILoginUseUseCase {
   constructor(
     private readonly authRepository: AuthRepository,
     private readonly signToken: TSignToken = JwtAdapter.generateToken
   ) {}
 
-  async execute(registerUserDto: RegisterUserDto): Promise<IUserToken> {
-    // Create user.
-    const user = await this.authRepository.register(registerUserDto);
+  async execute(loginUserDto: LoginUserDto): Promise<IUserToken> {
+    // Login
+    const user = await this.authRepository.login(loginUserDto);
 
     const token = await this.signToken({ id: user.id });
 
