@@ -38,8 +38,8 @@ export class AuthController {
     UserModel.find()
       .then((users) =>
         res.json({
-          //  users,
-          user: req.body.user,
+          users,
+          // user: req.body.user,
         })
       )
       .catch(() => res.status(500).json({ error: 'Internal Server Error' }));
